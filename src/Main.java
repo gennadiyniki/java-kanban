@@ -160,29 +160,37 @@ public class Main {
                     int type = scanner.nextInt();
                     System.out.println("Введите новый статус 1-NEW, 2-IN_PROGRESS, 3-DONE");
                     int status = scanner.nextInt();
+                    Task task = taskManager.getTaskById(id);
                     switch (status) {
                         case 1:
                             if (type == 1) {
-                                taskManager.updateTaskStatus(id, TaskStatus.NEW);
+                                task.setTaskStatus(TaskStatus.NEW);
+                                taskManager.updateTask(task);
                             } else if (type == 2) {
                                 Epic epic = taskManager.getEpicById(id);
                                 if (epic != null) {
-                                    taskManager.updateEpicStatus(epic);
+                                    taskManager.updateEpic(epic);
                                 }
                             } else if (type == 3) {
-                                taskManager.updateSubtaskStatus(id, TaskStatus.NEW);
+                                Subtask subtask = taskManager.getSubtaskById(id);
+
+                                subtask.setTaskStatus(TaskStatus.NEW);
+                                taskManager.updateSubtask(subtask);
                             }
                             break;
                         case 2:
                             if (type == 1) {
-                                taskManager.updateTaskStatus(id, TaskStatus.IN_PROGRESS);
+                                task.setTaskStatus(TaskStatus.IN_PROGRESS);
+                                taskManager.updateTask(task);
                             } else if (type == 2) {
                                 Epic epic = taskManager.getEpicById(id);
                                 if (epic != null) {
-                                    taskManager.updateEpicStatus(epic);
+                                    taskManager.updateEpic(epic);
                                 }
                             } else if (type == 3) {
-                                taskManager.updateSubtaskStatus(id, TaskStatus.IN_PROGRESS);
+                                Subtask subtask = taskManager.getSubtaskById(id);
+                                subtask.setTaskStatus(TaskStatus.IN_PROGRESS);
+                                taskManager.updateSubtask(subtask);
                             }
                             break;
                     }
