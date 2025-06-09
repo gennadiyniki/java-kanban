@@ -1,8 +1,12 @@
+package manager;
+
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
     int getGeneratorId();
@@ -44,4 +48,8 @@ public interface TaskManager {
     void deleteEpicById(int id);
 
     void deleteSubtaskById(int id);
+    List<Task>getHistory();
+
+    Set<Integer> getSubtasksById(int id);
 }
+

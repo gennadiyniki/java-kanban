@@ -1,25 +1,30 @@
+import manager.Managers;
+import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
+
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
 
-            System.out.println("1-список всех задач");
+            System.out.println("1-список задач");
             System.out.println("2-создать задачу");
             System.out.println("3-получить задачу по id");
             System.out.println("4-обновить задачу");
             System.out.println("5-удалить все задачи");
             System.out.println("6-удалить задачу по id");
             System.out.println("7-изменить статус задачи");
-            System.out.println("8-список подзадач для эпика");
-            System.out.println("9-получить историю поиска задач");
+            System.out.println("8-получить историю поиска задач");
+            System.out.println("9-список подзадач для эпика");
 
             int command = scanner.nextInt();
 
@@ -62,21 +67,21 @@ public class Main {
                     switch (type) {
                         case 1:
                             Task task = taskManager.getTaskById(id);
-                            System.out.println("Имя " + task.getName());
-                            System.out.println("Описание " + task.getDescription());
-                            System.out.println("Статус " + task.getTaskStatus());
+                            System.out.println("Название" + task.getName());
+                            System.out.println("Описание" + task.getDescription());
+                            System.out.println("Статус" + task.getTaskStatus());
                             break;
                         case 2:
                             Epic epic = taskManager.getEpicById(id);
-                            System.out.println("Имя " + epic.getName());
-                            System.out.println("Описание " + epic.getDescription());
-                            System.out.println("Статус " + epic.getTaskStatus());
+                            System.out.println("Название" + epic.getName());
+                            System.out.println("Описание" + epic.getDescription());
+                            System.out.println("Статус" + epic.getTaskStatus());
                             break;
                         case 3:
                             Subtask subtask = taskManager.getSubtaskById(id);
-                            System.out.println("Имя " + subtask.getName());
-                            System.out.println("Описание " + subtask.getDescription());
-                            System.out.println("Статус " + subtask.getTaskStatus());
+                            System.out.println("Название" + subtask.getName());
+                            System.out.println("Описание" + subtask.getDescription());
+                            System.out.println("Статус" + subtask.getTaskStatus());
                             break;
                     }
                     break;
@@ -101,11 +106,11 @@ public class Main {
                             taskManager.updateTask(task);
                             break;
                         case 2:
-                            Epic existingEpic = taskManager.getEpicById(id);
-                            existingEpic.setName(name);
-                            existingEpic.setDescription(description);
-                            existingEpic.setTaskStatus(taskStatus);
-                            taskManager.updateEpic(existingEpic);
+                            Epic existEpic = taskManager.getEpicById(id);
+                            existEpic.setName(name);
+                            existEpic.setDescription(description);
+                            existEpic.setTaskStatus(taskStatus);
+                            taskManager.updateEpic(existEpic);
                             break;
                         case 3:
                             Subtask searchSubtask = taskManager.getSubtaskById(id);
@@ -193,6 +198,20 @@ public class Main {
                                 taskManager.updateSubtask(subtask);
                             }
                             break;
+                    }
+                }
+                case 8: {
+                    List<Task> tasksList = taskManager.getHistory();
+                    for (Task task : tasksList) {
+                        System.out.println(task.getName());
+                    }
+                }
+                case 9: {
+                    System.out.println("Введите id задачи");
+                    int id = scanner.nextInt();
+                    Set<Integer> subtasksId = taskManager.getSubtasksById(id);
+                    for (int i : subtasksId) {
+                        System.out.println(taskManager.getSubtaskById(i).getName());
                     }
                 }
             }

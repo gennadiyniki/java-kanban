@@ -2,10 +2,11 @@ package tasks;
 
 import java.util.ArrayList;
 
-public class Epic extends Task {
+public class Epic extends tasks.Task {
     private ArrayList<Integer> subtasksId = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
+
         super(id, name, description, TaskStatus.NEW);
     }
 
@@ -14,11 +15,11 @@ public class Epic extends Task {
     }
 
     public void addSubtask(int subtaskId) {
-        if (!subtasksId.contains(subtaskId)) { // Prevent duplicate IDs
+        if (!subtasksId.contains(subtaskId)) {
             subtasksId.add(subtaskId);
         }
     }
     public void clearSubtasks() {
-        subtasksId.clear(); // Очищаем список ID подзадач
+        subtasksId.clear();
     }
 }
