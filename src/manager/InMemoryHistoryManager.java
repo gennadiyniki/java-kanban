@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    static final int I = 10;
+    private final int maxValue = 10;
 
     private final LinkedList<Task> tasksHistory = new LinkedList<>();;// проверить tasksHistory
 
@@ -15,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void addTaskToHistory(Task task) {
 
         // добавит таску в список с историей
-        if (tasksHistory.size() == I) {
+        if (tasksHistory.size() == maxValue) {
             tasksHistory.remove(0);
         }
         tasksHistory.add(task);
