@@ -1,7 +1,6 @@
 package manager;
 
 import tasks.Task;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,6 +70,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.next = next;
         }
     }
+
     @Override
     public ArrayList<Task> getHistory() {
         ArrayList<Task> historyList = new ArrayList<>();

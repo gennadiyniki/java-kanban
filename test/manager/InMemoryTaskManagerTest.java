@@ -88,6 +88,7 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteSubtaskById(subtask.getId());
         assertTrue(subtasks.isEmpty());
     }
+
     @Test
     public void test10UpdateEpicStatus() {
         assertEquals(TaskStatus.NEW, epic.getTaskStatus());
