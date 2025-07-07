@@ -195,9 +195,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(id)) {
             return;
         }
-            tasks.remove(id);
-            historyManager.remove(id);
-        }
+        tasks.remove(id);
+        historyManager.remove(id);
+    }
 
     @Override
     public void deleteEpicById(int id) {
@@ -243,11 +243,11 @@ public class InMemoryTaskManager implements TaskManager {
         return new HashSet<>(epic.getSubtasks());
     }
 
-        private void updateEpicStatus(Epic epic) {
+    private void updateEpicStatus(Epic epic) {
 
-            if (epic == null) {
-                return;
-            }
+        if (epic == null) {
+            return;
+        }
 
         ArrayList<Integer> subtaskIds = epic.getSubtasks();
         if (subtaskIds.isEmpty()) {

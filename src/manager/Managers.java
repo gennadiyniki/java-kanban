@@ -1,10 +1,13 @@
 package manager;
 
 public class Managers {
-    public static TaskManager getDefaultManager(){
+
+
+    public static TaskManager getDefaultManager() { // Пробел перед { отсутствует, это нормально
         return new InMemoryTaskManager();
     }
-    public static HistoryManager getDefaultHistory(){
+
+    public static HistoryManager getDefaultHistory() { // Пробел перед { отсутствует, это нормально
         return new InMemoryHistoryManager();
     }
 }

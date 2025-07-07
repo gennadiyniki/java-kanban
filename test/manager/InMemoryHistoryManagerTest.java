@@ -14,8 +14,7 @@ class InMemoryHistoryManagerTest {
         taskManager = Managers.getDefaultManager();
     }
 
-@Test
-
+    @Test
     void test14GetHistory() {
         taskManager.getTaskById(0);
         taskManager.getEpicById(1);

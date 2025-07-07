@@ -40,6 +40,7 @@ public class InMemoryTaskManagerTest {
         int id = epic.getId();
         assertEquals(epic, taskManager.getEpicById(id));
     }
+
     @Test
     public void test2GetTaskById() {
         int id = task.getId();
