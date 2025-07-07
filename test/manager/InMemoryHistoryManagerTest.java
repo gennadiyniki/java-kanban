@@ -1,15 +1,25 @@
 package manager;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    private static TaskManager taskManager;
+    private TaskManager taskManager;
 
-    @Test
-    public void test14GetHistory() {
+    @BeforeEach
+    void setUp() {
         taskManager = Managers.getDefaultManager();
+    }
+
+@Test
+
+    void test14GetHistory() {
+        taskManager.getTaskById(0);
+        taskManager.getEpicById(1);
+        taskManager.getSubtaskById(2);
         assertTrue(taskManager.getHistory().isEmpty());
         assertFalse(taskManager.getHistory().size() == 7);
     }
