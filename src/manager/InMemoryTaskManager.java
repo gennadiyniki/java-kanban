@@ -195,8 +195,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (!tasks.containsKey(id)) {
             return;
         }
-            tasks.remove(id);
-            historyManager.remove(id);
+        tasks.remove(id);
+        historyManager.remove(id);
         }
 
     @Override

@@ -28,7 +28,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             last = null;
         } else if (node == first) {
             first = first.next;
-            first.setPrev(null);
+            if (first != null) {
+                first.setPrev(null);
+            }
             nodes.remove(id, node);
         } else if (node == last) {
             last = last.prev;
