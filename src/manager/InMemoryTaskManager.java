@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int generatorId = 1;//private
 
-    public void addTasks() {
+    public void printTasks() {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
             System.out.println(task.getName());
