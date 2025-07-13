@@ -54,7 +54,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         last = node;
     }
 
-    public class Node {
+    private static class Node {
         Task value;
         Node prev;
         Node next;

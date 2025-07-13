@@ -31,7 +31,7 @@ public class InMemoryTaskManagerTest {
         taskManager.addTask(task);
         epic = new Epic(1, "Эпик", "Описание");
         taskManager.addEpic(epic);
-        subtask = new Subtask(1, "Сабтаска", "Описание", TaskStatus.NEW, 1);
+        subtask = new Subtask(1, "Сабтаска", "Описание", 1, TaskStatus.NEW);
         taskManager.addSubtask(subtask);
     }
 

@@ -1,10 +1,12 @@
 package manager;
 
+import java.io.File;
+
 public class Managers {
 
 
     public static TaskManager getDefaultManager() { // Пробел перед { отсутствует, это нормально
-        return new InMemoryTaskManager();
+        return new FileBackedTaskManager(new File("resources/data.csv"));
     }
 
     public static HistoryManager getDefaultHistory() { // Пробел перед { отсутствует, это нормально
