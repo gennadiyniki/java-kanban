@@ -43,18 +43,18 @@ class FileBackedTaskManagerTest {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(savedTasksFile.toFile());
         // Проверяем таски
         Task loadedTask = loadedManager.getTaskById(1);
-        assertNotNull(loadedTask, "ТАСКА не загружена");
-        assertEquals("ТАСКА", loadedTask.getName());
+        assertNotNull(loadedTask, "Таск не загружена");
+        assertEquals("Таск", loadedTask.getName());
         assertEquals(TaskStatus.NEW, loadedTask.getTaskStatus());
         // Проверка эпиков
         Epic loadedEpic = loadedManager.getEpicById(2);
-        assertNotNull(loadedEpic, "ЭПИК не загружен");
-        assertEquals("ЭПИК", loadedEpic.getName());
-        assertTrue(loadedEpic.getSubtasks().contains(3), "САБТАСКА не привязана к ЭПИКУ");
+        assertNotNull(loadedEpic, "Эпик не загружен");
+        assertEquals("Эпик", loadedEpic.getName());
+        assertTrue(loadedEpic.getSubtasks().contains(3), "Сабтаск не привязана к ЭПИКУ");
         // Проверка сабтаски
         Subtask loadedSubtask = loadedManager.getSubtaskById(3);
-        assertNotNull(loadedSubtask, "САБТАСКА не загружена");
-        assertEquals("САБТАСКА", loadedSubtask.getName());
+        assertNotNull(loadedSubtask, "Сабтаск не загружена");
+        assertEquals("Сабтаск", loadedSubtask.getName());
         assertEquals(2, loadedSubtask.getEpicId(), "Неверный EpicId у САБТАСКИ");
 
     }

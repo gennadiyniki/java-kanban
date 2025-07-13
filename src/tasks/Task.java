@@ -19,6 +19,10 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
