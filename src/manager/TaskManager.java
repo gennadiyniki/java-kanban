@@ -11,6 +11,7 @@ import java.util.Set;
 public interface TaskManager {
     int getGeneratorId();
 
+
     Task addTask(Task task);
 
     Epic addEpic(Epic epic);
@@ -48,8 +49,10 @@ public interface TaskManager {
     void deleteEpicById(int id);
 
     void deleteSubtaskById(int id);
-    List<Task>getHistory();
+
+    List<Task> getHistory();
 
     Set<Integer> getSubtasksById(int id);
+
 }
 

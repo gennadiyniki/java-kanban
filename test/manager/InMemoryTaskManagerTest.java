@@ -40,6 +40,7 @@ public class InMemoryTaskManagerTest {
         int id = epic.getId();
         assertEquals(epic, taskManager.getEpicById(id));
     }
+
     @Test
     public void test2GetTaskById() {
         int id = task.getId();
@@ -88,6 +89,7 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteSubtaskById(subtask.getId());
         assertTrue(subtasks.isEmpty());
     }
+
     @Test
     public void test10UpdateEpicStatus() {
         assertEquals(TaskStatus.NEW, epic.getTaskStatus());
