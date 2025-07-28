@@ -15,9 +15,6 @@ public class Task {
         this.description = description;
         this.taskStatus = taskStatus;
     }
-    public TaskType getType() {
-        return TaskType.TASK;
-    }
 
     public TaskType getType() {
         return TaskType.TASK;
