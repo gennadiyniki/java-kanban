@@ -5,11 +5,12 @@ import java.io.File;
 public class Managers {
 
 
-    public static TaskManager getDefaultManager() { // Пробел перед { отсутствует, это нормально
-        return new FileBackedTaskManager(new File("src/main/resources/data.csv"));
+    public static TaskManager getDefaultManager() {
+
+        return new FileBackedTaskManager(new File("/Users/gennadiyniki/IdeaProjects/java-kanban/src/resourses/data.csv"));
     }
 
-    public static HistoryManager getDefaultHistory() { // Пробел перед { отсутствует, это нормально
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 }
