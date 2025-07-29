@@ -25,7 +25,7 @@ public class InMemoryTaskManagerTest {
 
     @BeforeEach
     public void installFiled() {
-        taskManager = Managers.getDefaultManager();
+        taskManager = Managers.getInMemoryManager();
 
         task = new Task(1, "Название", "Описание", TaskStatus.NEW);
         taskManager.addTask(task);
@@ -48,7 +48,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void test3GetSubtaskById() {// не проходит
+    public void test3GetSubtaskById() {
         int id = subtask.getId();
         assertEquals(null, taskManager.getSubtaskById(id));
     }
