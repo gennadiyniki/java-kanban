@@ -11,8 +11,8 @@ public class CSVFormatter {
         builder.append(task.getName()).append(",");
         builder.append(task.getTaskStatus()).append(",");
         builder.append(task.getDescription()).append(",");
-        if (task instanceof Subtask subtask) {
-            builder.append(subtask.getEpicId());
+        if (task.getType() == TaskType.SUBTASK) {
+            builder.append(((Subtask) task).getEpicId());
         }
 
         return builder.toString();

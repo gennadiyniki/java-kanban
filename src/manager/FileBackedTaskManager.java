@@ -4,6 +4,8 @@ import tasks.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import java.util.Map;
@@ -11,6 +13,15 @@ import java.util.Map;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File savedTasksFile;
+    public FileBackedTaskManager() {
+        try {
+            // Получаем путь к файлу из ресурсов
+            Path path = Paths.get(getClass().getClassLoader().getResource("data.csv").toURI());
+            this.savedTasksFile = path.toFile();
+        } catch (Exception e) {
+            throw new ManagerSaveException("Файл data.csv не найден в ресурсах", e);
+        }
+    }
 
     public FileBackedTaskManager(File savedTasksFile) {
         this.savedTasksFile = savedTasksFile;
