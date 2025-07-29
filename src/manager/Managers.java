@@ -6,7 +6,7 @@ public class Managers {
 
     public static TaskManager getDefaultManager() {
         return new FileBackedTaskManager(
-                new File("/Users/gennadiyniki/IdeaProjects/java-kanban/src/resourses/data.csv")
+                new File("/Users/gennadiyniki/IdeaProjects/java-kanban/src/resources/data.csv")
         );
     }
 
