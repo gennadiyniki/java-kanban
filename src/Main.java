@@ -52,7 +52,7 @@ public class Main {
                         case 3:
                             System.out.println("Введите id эпик задачи");
                             int epicId = scanner.nextInt();
-                            Subtask newSubtask = new Subtask(0, name, description, TaskStatus.NEW, epicId);
+                            Subtask newSubtask = new Subtask(0, name, description, epicId, TaskStatus.NEW);
                             taskManager.addSubtask(newSubtask);
                             break;
                     }
@@ -115,7 +115,7 @@ public class Main {
                         case 3:
                             Subtask searchSubtask = taskManager.getSubtaskById(id);
                             int epicId = searchSubtask.getEpicId();
-                            Subtask subtask = new Subtask(id, name, description, taskStatus, epicId);
+                            Subtask subtask = new Subtask(id, name, description, epicId, taskStatus);
                             taskManager.updateSubtask(subtask);
                             break;
                     }
@@ -194,7 +194,7 @@ public class Main {
                                 }
                             } else if (type == 3) {
                                 Subtask subtask = taskManager.getSubtaskById(id);
-                                subtask.setTaskStatus(TaskStatus.IN_PROGRESS);
+                                subtask.setTaskStatus(TaskStatus.DONE);
                                 taskManager.updateSubtask(subtask);
                             }
                             break;

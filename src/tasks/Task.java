@@ -16,6 +16,10 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public Task(String name, String description) {
         this.name = name;
         this.description = description;

@@ -1,13 +1,20 @@
 package manager;
 
+import java.io.File;
+
 public class Managers {
 
+    public static TaskManager getDefaultManager() {
+        return new FileBackedTaskManager(
+                new File("/Users/gennadiyniki/IdeaProjects/java-kanban/src/resources/data.csv")
+        );
+    }
 
-    public static TaskManager getDefaultManager() { // Пробел перед { отсутствует, это нормально
+    public static TaskManager getInMemoryManager() {
         return new InMemoryTaskManager();
     }
 
-    public static HistoryManager getDefaultHistory() { // Пробел перед { отсутствует, это нормально
+    public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 }

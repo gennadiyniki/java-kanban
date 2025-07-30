@@ -25,13 +25,13 @@ public class InMemoryTaskManagerTest {
 
     @BeforeEach
     public void installFiled() {
-        taskManager = Managers.getDefaultManager();
+        taskManager = Managers.getInMemoryManager();
 
         task = new Task(1, "Название", "Описание", TaskStatus.NEW);
         taskManager.addTask(task);
         epic = new Epic(1, "Эпик", "Описание");
         taskManager.addEpic(epic);
-        subtask = new Subtask(1, "Сабтаска", "Описание", TaskStatus.NEW, 1);
+        subtask = new Subtask(1, "Сабтаск", "Описание", 1, TaskStatus.NEW);
         taskManager.addSubtask(subtask);
     }
 
@@ -48,7 +48,7 @@ public class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void test3GetSubtaskById() {// не проходит
+    public void test3GetSubtaskById() {
         int id = subtask.getId();
         assertEquals(null, taskManager.getSubtaskById(id));
     }
@@ -112,7 +112,7 @@ public class InMemoryTaskManagerTest {
     @Test
     public void test13AddSubtask() {
         assertEquals(3, subtask.getId());
-        assertEquals("Сабтаска", subtask.getName());
+        assertEquals("Сабтаск", subtask.getName());
         assertEquals("Описание", subtask.getDescription());
         assertEquals(1, subtask.getEpicId());
     }
