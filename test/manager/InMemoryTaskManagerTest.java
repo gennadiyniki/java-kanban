@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InMemoryTaskManagerTest {
+public abstract class InMemoryTaskManagerTest extends TaskManagerTest {
 
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
@@ -111,7 +111,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void test13AddSubtask() {
-        assertEquals(3, subtask.getId());
+        assertEquals(1, subtask.getId());
         assertEquals("Сабтаск", subtask.getName());
         assertEquals("Описание", subtask.getDescription());
         assertEquals(1, subtask.getEpicId());

@@ -40,6 +40,8 @@ public interface TaskManager {
 
     void deleteTasks();
 
+    void deleteTask(int id);
+
     void deleteEpics();
 
     void deleteSubtasks();
@@ -54,5 +56,6 @@ public interface TaskManager {
 
     Set<Integer> getSubtasksById(int id);
 
+    List<Task> getPrioritizedTasks();
 }
 
