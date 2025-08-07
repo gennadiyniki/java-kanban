@@ -22,27 +22,24 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     void setUp() {
         history = new InMemoryHistoryManager();
-        taskManager = Managers.getDefaultManager();
-
         task = new Task(1, "Task", "Description", TaskStatus.NEW);
         epic = new Epic(2, "Epic", "Description");
         subtask = new Subtask(3, "Subtask", "Description", 2, TaskStatus.NEW);
-
-
-        taskManager.addTask(task);
-        taskManager.addEpic(epic);
-        taskManager.addSubtask(subtask);
     }
 
 
     @Test
-    void test14GetHistory() {
-        taskManager.getTaskById(0);
-        taskManager.getEpicById(1);
-        taskManager.getSubtaskById(2);
+    void testGetHistory() {
+        history.add(task);
+        history.add(epic);
+        history.add(subtask);
 
-        assertTrue(taskManager.getHistory().isEmpty());
-        assertFalse(taskManager.getHistory().size() == 7);
+        List<Task> actualHistory = history.getHistory();
+
+        assertEquals(3, actualHistory.size(), "История должна содержать 3 задачи");
+        assertEquals(task, actualHistory.get(0), "Первая задача в истории не совпадает");
+        assertEquals(epic, actualHistory.get(1), "Вторая задача в истории не совпадает");
+        assertEquals(subtask, actualHistory.get(2), "Третья задача в истории не совпадает");
     }
 
     @Test
