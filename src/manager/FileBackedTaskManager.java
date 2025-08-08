@@ -6,9 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-
-import java.util.Map;
+import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -20,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Path path = Paths.get(getClass().getClassLoader().getResource("data.csv").toURI());
             this.savedTasksFile = path.toFile();
         } catch (Exception e) {
-            throw new ManagerSaveException("Файл data.csv не найден в ресурсах", e);
+            throw new ManagerSaveException("Файл data.csv не найден в ресурсах");
         }
     }
 
@@ -30,7 +28,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,epic,duration,startTime");
             writer.newLine();
             for (Task task : tasks.values()) {
                 writer.write(CSVFormatter.toString(task));
@@ -45,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла", e);
+            throw new ManagerSaveException("Ошибка при сохранении файла");
         }
     }
 
@@ -55,6 +53,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Map<Integer, Task> tasks = new HashMap<>();
             Map<Integer, Epic> epics = new HashMap<>();
             Map<Integer, Subtask> subtasks = new HashMap<>();
+            Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
             int maxId = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
@@ -78,6 +77,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             maxId = task.getId();
                         }
                         tasks.put(task.getId(), task);
+                        if (task.getStartTime() != null) {
+                            prioritizedTasks.add(task);
+                        }
                     }
                 }
             }
@@ -92,9 +94,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             manager.epics = epics;
             manager.subtasks = subtasks;
             manager.generatorId = maxId;
+            for (Epic epic : epics.values()) {
+                manager.updateEpicStatus(epic); // Теперь метод доступен
+            }
             return manager;
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при загрузке из файла", e);
+            throw new ManagerSaveException("Ошибка при загрузке из файла");
         }
     }
 
@@ -131,11 +136,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    @Override
-    public void deleteTasks() {
-        super.deleteTasks();
-        save();
-    }
 
     @Override
     public Task addTask(Task task) {
@@ -180,5 +180,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     protected void updateEpicStatus(Epic epic) {
         super.updateEpicStatus(epic);
         save();
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return prioritizedTasks.stream().toList();
     }
 }
