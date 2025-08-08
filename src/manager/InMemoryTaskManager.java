@@ -1,9 +1,6 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+import tasks.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -71,9 +68,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (subtask.getStartTime() != null && subtask.getDuration() != null) {
-            boolean hasIntersection = prioritizedTasks.stream()
-                    .anyMatch(existing -> subtask.hasIntersectionWith(existing));
-            if (hasIntersection) {
+            if (hasTimeIntersection(subtask)) {
                 throw new ManagerSaveException("Обнаружено пересечение времени!");
             }
             prioritizedTasks.add(subtask);
@@ -93,7 +88,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearSubtasks() {
         subtasks.clear();
-        prioritizedTasks.removeIf(task -> task instanceof Subtask);
+        prioritizedTasks.removeIf(task -> task.getType() == TaskType.SUBTASK);
         for (Epic epic : epics.values()) {
             epic.clearSubtasks();
             updateEpicStatus(epic);
@@ -290,6 +285,11 @@ public class InMemoryTaskManager implements TaskManager {
         return new HashSet<>(epic.getSubtasks());
     }
 
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return List.of();
+    }
+
     protected void updateEpicStatus(Epic epic) {
 
         if (epic == null) {
@@ -322,12 +322,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
-    }
-
-    public List<Task> getPrioritizedTasks() {
-        return prioritizedTasks.stream()
-                .sorted(Comparator.comparing(Task::getStartTime))
-                .toList();
     }
 
     private boolean isTimeOverlap(Task task1, Task task2) {

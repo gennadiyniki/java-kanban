@@ -45,68 +45,68 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected abstract T createTaskManager();
 
     @Test
-    public void test1GetEpicById() {
+    public void testGetEpicById() {
         int id = epic.getId();
         assertEquals(epic, taskManager.getEpicById(id));
     }
 
     @Test
-    public void test2GetTaskById() {
+    public void testGetTaskById() {
         int id = task.getId();
         assertEquals(task, taskManager.getTaskById(id));
     }
 
     @Test
-    public void test5DeleteTask() {
+    public void testDeleteTask() {
         taskManager.deleteTasks();
         assertNull(taskManager.getTaskById(task.getId()));
     }
 
     @Test
-    public void test6DeleteSubtask() {
+    public void testDeleteSubtask() {
         taskManager.deleteSubtasks();
         assertNull(taskManager.getSubtaskById(subtask.getId()));
     }
 
     @Test
-    public void test7DeleteEpicById() {
+    public void testDeleteEpicById() {
         taskManager.deleteEpicById(epic.getId());
         assertNull(taskManager.getEpicById(epic.getId()));
     }
 
     @Test
-    public void test8DeleteTaskById() {
+    public void testDeleteTaskById() {
         taskManager.deleteTaskById(task.getId());
         assertNull(taskManager.getTaskById(task.getId()));
     }
 
     @Test
-    public void test9DeleteSubtaskById() {
+    public void testDeleteSubtaskById() {
         taskManager.deleteSubtaskById(subtask.getId());
         assertNull(taskManager.getSubtaskById(subtask.getId()));
     }
 
     @Test
-    public void test10UpdateEpicStatus() {
+    public void testUpdateEpicStatus() {
         assertEquals(TaskStatus.NEW, epic.getTaskStatus());
     }
 
     @Test
-    public void test11AddTask() {
+    public void testAddTask() {
         Task newTask = new Task(2, "Новая задача", "Описание", TaskStatus.NEW);
         taskManager.addTask(newTask);
         assertEquals(newTask, taskManager.getTaskById(newTask.getId()));
     }
 
     @Test
-    public void test12AddEpic() {
+    public void testAddEpic() {
         Epic newEpic = new Epic(2, "Новый эпик", "Описание");
         taskManager.addEpic(newEpic);
         assertEquals(newEpic, taskManager.getEpicById(newEpic.getId()));
     }
 
     @Test
-    public void test14TaskTimeIntersection() {
+    public void testTaskTimeIntersection() {
         LocalDateTime now = LocalDateTime.now();
         Task task1 = new Task(10, "Task 1", "Description 1", TaskStatus.NEW, now, Duration.ofMinutes(30));
         Task task2 = new Task(11, "Task 2", "Description 2", TaskStatus.NEW, now.plusMinutes(15), Duration.ofMinutes(30));

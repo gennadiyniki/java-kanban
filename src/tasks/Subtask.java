@@ -28,12 +28,6 @@ public class Subtask extends Task {
         return TaskType.SUBTASK;
     }
 
-
-    @Override
-    public boolean hasIntersectionWith(Task other) {
-        return super.hasIntersectionWith(other);
-    }
-
     @Override
     public String toString() {
         return "Subtask{" +
