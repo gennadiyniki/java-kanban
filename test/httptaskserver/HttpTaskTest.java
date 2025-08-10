@@ -38,6 +38,7 @@ public class HttpTaskTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+
         manager = Managers.getDefaultManager();
         httpTaskServer = new HttpTaskServer(manager);
         httpTaskServer.start();
@@ -74,6 +75,7 @@ public class HttpTaskTest {
 
     @AfterEach
     void afterEach() {
+
         httpTaskServer.stop();
     }
 

@@ -12,10 +12,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File savedTasksFile;
 
-    public FileBackedTaskManager() {
+    public FileBackedTaskManager(Path tempFile) {
         try {
             // Получаем путь к файлу из ресурсов
-            Path path = Paths.get(getClass().getClassLoader().getResource("data.csv").toURI());
+            Path path = Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("data.csv")).toURI());
             this.savedTasksFile = path.toFile();
         } catch (java.lang.Exception e) {
             throw new Exception("Файл data.csv не найден в ресурсах");
