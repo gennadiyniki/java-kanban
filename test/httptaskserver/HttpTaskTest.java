@@ -41,11 +41,13 @@ public class HttpTaskTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+
+
         // Создаем временный файл для каждого теста
         tempFile = Files.createTempFile("tasks", ".csv");
         manager = new FileBackedTaskManager(tempFile);
 
-        manager = Managers.getDefaultManager();
+        manager = Managers.getInMemoryManager();
         httpTaskServer = new HttpTaskServer(manager);
         httpTaskServer.start();
 
