@@ -36,10 +36,10 @@ public class HttpTaskServer {
         System.out.printf("Сервер остановлен на %s порту ", PORT);
     }
 
-public static void main(String[] args) throws IOException {
-    TaskManager taskManager = Managers.getDefaultManager();
-    HttpTaskServer taskServer = new HttpTaskServer(taskManager);
-    taskServer.start();
-    taskServer.stop();
+    public static void main(String[] args) throws IOException {
+        TaskManager taskManager = Managers.getDefaultManager();
+        HttpTaskServer taskServer = new HttpTaskServer(taskManager);
+        taskServer.start();
+        taskServer.stop();
     }
 }

@@ -26,6 +26,7 @@ public class BaseHttpHandler implements HttpHandler {
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .create();
     }
+
     protected void sendText(HttpExchange exchange, String text, int statusCode) throws IOException {
 
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
@@ -41,6 +42,7 @@ public class BaseHttpHandler implements HttpHandler {
         this.taskManager = taskManager;
         this.gson = BaseHttpHandler.getGson();
     }
+
     @Override
     public void handle(HttpExchange exchange) {
         try {
@@ -80,6 +82,7 @@ public class BaseHttpHandler implements HttpHandler {
     protected void sendNotFound(HttpExchange exchange, String text) throws IOException {
         sendText(exchange, text, 404);
     }
+
     protected void sendNotAllowed(HttpExchange exchange) throws IOException {
         sendText(exchange, "Доступ запрещен", 405);
     }
@@ -87,6 +90,7 @@ public class BaseHttpHandler implements HttpHandler {
     protected void sendHasInteractions(HttpExchange exchange, String text) throws IOException {
         sendText(exchange, text, 406);
     }
+
     public void handleGet(HttpExchange httpExchange) throws IOException {
         sendNotAllowed(httpExchange);
     }

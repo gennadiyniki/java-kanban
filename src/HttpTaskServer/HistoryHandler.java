@@ -12,6 +12,7 @@ public class HistoryHandler extends BaseHttpHandler {
         super(taskManager);
         //this.taskManager = taskManager;
     }
+
     @Override
     public void handleGet(HttpExchange exchange) throws IOException {
         try {

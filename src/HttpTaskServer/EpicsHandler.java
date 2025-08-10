@@ -15,6 +15,7 @@ public class EpicsHandler extends BaseHttpHandler {
         super(taskManager);
         //this.taskManager = taskManager;
     }
+
     @Override
     public void handleGet(HttpExchange exchange) throws IOException {
         String[] urlParts = exchange.getRequestURI().getPath().split("/");
@@ -39,6 +40,7 @@ public class EpicsHandler extends BaseHttpHandler {
             }
         }
     }
+
     @Override
     public void handlePost(HttpExchange exchange) throws IOException {
         String[] urlParts = exchange.getRequestURI().getPath().split("/");
@@ -65,6 +67,7 @@ public class EpicsHandler extends BaseHttpHandler {
             }
         }
     }
+
     @Override
     public void handleDelete(HttpExchange exchange) throws IOException {
         String[] urlParts = exchange.getRequestURI().getPath().split("/");
@@ -79,7 +82,7 @@ public class EpicsHandler extends BaseHttpHandler {
                     if (taskId > 0 && taskManager.getEpicById(taskId) != null) {
                         taskManager.deleteEpicById(taskId);
                         sendSuccess(exchange, "Эпик " + taskId + " удален");
-                    }  else {
+                    } else {
                         sendNotFound(exchange, "Эпик " + taskId + " не найден");
                     }
                 }

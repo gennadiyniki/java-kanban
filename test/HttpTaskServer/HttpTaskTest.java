@@ -38,12 +38,10 @@ public class HttpTaskTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        // Инициализация менеджера и HTTP сервера
         manager = Managers.getDefaultManager();
         httpTaskServer = new HttpTaskServer(manager);
         httpTaskServer.start();
 
-        // Создаем и добавляем задачи
         Task task1 = new Task(1, "Таска 1", "Описание Таски 1", TaskStatus.NEW,
                 LocalDateTime.parse("10.08.2025 00:00", dateTimeFormatter),
                 Duration.ofMinutes(100));
