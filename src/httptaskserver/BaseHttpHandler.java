@@ -15,8 +15,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class BaseHttpHandler implements HttpHandler {
-    protected TaskManager taskManager;
+    protected final TaskManager taskManager;
     protected Gson gson;
+
+    public BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
+        this.gson = BaseHttpHandler.getGson();
+    }
 
     public static Gson getGson() {
         return new GsonBuilder()
@@ -38,10 +43,6 @@ public class BaseHttpHandler implements HttpHandler {
         exchange.close();
     }
 
-    public BaseHttpHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
-        this.gson = BaseHttpHandler.getGson();
-    }
 
     @Override
     public void handle(HttpExchange exchange) {

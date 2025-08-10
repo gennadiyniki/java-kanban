@@ -1,7 +1,7 @@
 package httptaskserver;
 
 import com.sun.net.httpserver.HttpExchange;
-import manager.Exception;
+import exception.NotFoundException;
 import manager.TaskManager;
 import tasks.Epic;
 
@@ -13,7 +13,6 @@ public class EpicsHandler extends BaseHttpHandler {
 
     public EpicsHandler(TaskManager taskManager) {
         super(taskManager);
-        //this.taskManager = taskManager;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class EpicsHandler extends BaseHttpHandler {
                         sendNotFound(exchange, "Эпик " + taskId + " не найден");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Эпик отсуствует");
             }
         }
@@ -62,7 +61,7 @@ public class EpicsHandler extends BaseHttpHandler {
                         sendNotFound(exchange, "Эпик " + taskId + " не найден");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Эпик отсуствует");
             }
         }
@@ -86,7 +85,7 @@ public class EpicsHandler extends BaseHttpHandler {
                         sendNotFound(exchange, "Эпик " + taskId + " не найден");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Эпик отсуствует");
             }
         }

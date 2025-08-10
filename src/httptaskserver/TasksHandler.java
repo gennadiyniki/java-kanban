@@ -1,7 +1,8 @@
 package httptaskserver;
 
 import com.sun.net.httpserver.HttpExchange;
-import manager.Exception;
+import exception.ConflictException;
+import exception.NotFoundException;
 import manager.TaskManager;
 import tasks.Task;
 
@@ -12,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 public class TasksHandler extends BaseHttpHandler {
     public TasksHandler(TaskManager taskManager) {
         super(taskManager);
-        //this.taskManager = taskManager;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class TasksHandler extends BaseHttpHandler {
                         sendNotFound(exchange, "Таска " + taskId + " не найдена");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Такой Таски нет");
             }
         }
@@ -50,20 +50,24 @@ public class TasksHandler extends BaseHttpHandler {
                 Task task = gson.fromJson(taskString, Task.class);
                 if (urlParts.length == 2) {
                     taskManager.addTask(task);
-                    sendSuccessUpdate(exchange, "Создана новая Таска");
+                    sendSuccessUpdate(exchange, "Новая задача создана");
                 }
                 if (urlParts.length == 3) {
                     int taskId = Integer.parseInt(urlParts[2]);
 
                     if (taskId > 0 && taskManager.getTaskById(taskId) != null) {
                         taskManager.updateTask(task);
-                        sendSuccessUpdate(exchange, " Таска " + taskId + " обновлена");
+                        String result = String.format("Задача %s успешно обновлена", taskId);
+                        sendSuccessUpdate(exchange, result);
                     } else {
-                        sendNotFound(exchange, "Таска " + taskId + " не найдена");
+                        String result = String.format("Задача %s не найдена", taskId);
+                        sendNotFound(exchange, result);
                     }
                 }
-            } catch (Exception.NotFoundException e) {
-                sendNotFound(exchange, "Такой Таски нет");
+            } catch (NotFoundException e) {
+                sendNotFound(exchange, "Нет такой задачи");
+            } catch (ConflictException e) {
+                sendHasInteractions(exchange, "В эти даты уже запланирована другая задача");
             }
         }
     }
@@ -86,7 +90,7 @@ public class TasksHandler extends BaseHttpHandler {
                         sendNotFound(httpExchange, "Таска " + taskId + " не найдена");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(httpExchange, " Такой Таски нет");
             }
         }

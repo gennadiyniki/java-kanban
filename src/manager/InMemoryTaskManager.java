@@ -1,5 +1,6 @@
 package manager;
 
+import exception.ConflictException;
 import tasks.*;
 
 import java.time.Duration;
@@ -41,7 +42,7 @@ public abstract class InMemoryTaskManager implements TaskManager {
     @Override
     public Task addTask(Task task) {
         if (task.getStartTime() != null && hasTimeIntersection(task)) {
-            throw new Exception("Обнаружено пересечение по времени");
+            throw new ConflictException("Обнаружено пересечение по времени");
         }
 
         task.setId(getGeneratorId());
@@ -69,7 +70,7 @@ public abstract class InMemoryTaskManager implements TaskManager {
 
         if (subtask.getStartTime() != null && subtask.getDuration() != null) {
             if (hasTimeIntersection(subtask)) {
-                throw new Exception("Обнаружено пересечение времени!");
+                throw new ConflictException("Обнаружено пересечение времени!");
             }
             prioritizedTasks.add(subtask);
         }
@@ -106,7 +107,7 @@ public abstract class InMemoryTaskManager implements TaskManager {
             return null;
         }
         if (task.getStartTime() != null && hasTimeIntersection(task)) {
-            throw new Exception("Обнаружено пересечение по времени");
+            throw new ConflictException("Обнаружено пересечение по времени");
         }
         prioritizedTasks.removeIf(t -> t.getId() == task.getId());
         if (task.getStartTime() != null) {

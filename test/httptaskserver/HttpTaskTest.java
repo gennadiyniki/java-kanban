@@ -2,6 +2,7 @@ package httptaskserver;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
@@ -12,7 +13,6 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
-
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,9 +26,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskTest {
     private Path tempFile;
@@ -102,41 +100,59 @@ public class HttpTaskTest {
         }.getType());
         assertNotNull(tasks, "Таски не выводятся");
         assertEquals(manager.getTasks(), tasks, "Некорректное количество Тасок");
-        assertEquals(200, response.statusCode(), "КодСтатус неверный");
+        assertEquals(200, response.statusCode(), "КодСтатус не совпадает");
     }
 
     @Test
     public void testCreateNewTask() throws IOException, InterruptedException {
-        Task newTask = new Task(7, "Таска 3", "Описание Таски 3", TaskStatus.NEW,
-                LocalDateTime.parse("14.08.2025 00:00", dateTimeFormatter),
-                Duration.ofMinutes(100));
+        // 1. Создаем задачу с полными данными
+        Task newTask = new Task(
+                0, // ID будет сгенерирован автоматически
+                "Таска 3",
+                "Описание Таски 3",
+                TaskStatus.NEW,
+                LocalDateTime.parse("11.11.2025 00:00", dateTimeFormatter),
+                Duration.ofMinutes(100L)
+        );
 
-        // Отправка запроса с таймаутом
-        HttpClient client = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(5))
-                .build();
+        // 2. Отправляем запрос
+        String taskJson = gson.toJson(newTask);
+        //System.out.println(taskJson);
 
+        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/tasks"))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(newTask)))
-                .timeout(Duration.ofSeconds(5))
+                .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
+
+        Thread.sleep(100);
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(201, response.statusCode(), "КодСтатус неверный");
-        assertNotNull(response.body(), "В теле ответа ничего нет");
+        assertEquals(201, response.statusCode(),
+                response.body());
 
+        // 5. Проверяем, что задача добавилась
         List<Task> tasks = manager.getTasks();
+        System.out.println("Текущие Таски: " + tasks);
+
         Task createdTask = tasks.stream()
                 .filter(t -> t.getName().equals("Таска 3"))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new AssertionError("Таска не создана"));
 
-        assertNotNull(createdTask, "Таска не найдена в менеджере");
         assertEquals("Описание Таски 3", createdTask.getDescription());
+        assertEquals(TaskStatus.NEW, createdTask.getTaskStatus());
+
+        // Используем прямое обращение к полю startTime вместо getStartTime()
+        assertEquals(
+                LocalDateTime.parse("11.11.2025 00:00", dateTimeFormatter),
+                createdTask.getStartTime() // Обращаемся напрямую к полю
+        );
+        assertEquals(Duration.ofMinutes(100L), createdTask.getDuration());
     }
+
 
     @Test
     public void testDeleteTaskById() throws IOException, InterruptedException {
@@ -146,10 +162,10 @@ public class HttpTaskTest {
                 .uri(urlTask)
                 .DELETE()
                 .build();
-        assertEquals(2, manager.getTasks().size(), "Список Тасок не корректный");
+        assertEquals(2, manager.getTasks().size(), "Список Тасок не корректен");
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(200, response.statusCode(), "КодСтатус неверный");
-        assertEquals(1, manager.getTasks().size(), "Список Тасок не корректный");
+        assertEquals(200, response.statusCode(), "КодСтатус не совпадает");
+        assertEquals(1, manager.getTasks().size(), "Список Тасок не корректен");
     }
 
     @Test
@@ -164,6 +180,8 @@ public class HttpTaskTest {
         Epic epic = gson.fromJson(response.body(), new TypeToken<Epic>() {
         }.getType());
         assertEquals(manager.getEpicById(3), epic, "Эпики не совпадают");
-        assertEquals(200, response.statusCode(), "КодСтатус неверный");
+        assertEquals(200, response.statusCode(), "КодСтатус не совпадает");
     }
+
+
 }

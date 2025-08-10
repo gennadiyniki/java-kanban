@@ -1,7 +1,7 @@
 package httptaskserver;
 
 import com.sun.net.httpserver.HttpExchange;
-import manager.Exception;
+import exception.NotFoundException;
 import manager.TaskManager;
 
 
@@ -17,7 +17,7 @@ public class PrioritizedHandler extends BaseHttpHandler {
         try {
             String prioritized = gson.toJson(taskManager.getPrioritizedTasks());
             sendSuccess(httpExchange, prioritized);
-        } catch (Exception.NotFoundException e) {
+        } catch (NotFoundException e) {
             sendNotFound(httpExchange, "Отсортированный список не найден");
         }
     }

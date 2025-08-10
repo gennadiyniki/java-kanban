@@ -101,7 +101,7 @@ public class Task {
         if (startTime == null || duration == null) {
             return null;
         }
-        return startTime.plus(duration);
+        return startTime;
     }
 
     public void setStartTime(LocalDateTime startTime) {

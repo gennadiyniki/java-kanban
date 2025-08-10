@@ -1,5 +1,6 @@
 package manager;
 
+import exception.ManagerSaveException;
 import tasks.*;
 
 import java.io.*;
@@ -37,9 +38,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             try {
-                throw new Exception.ManagerException("Не удалось инициализировать файл хранения:");
-            } catch (Exception.ManagerException ex) {
-                throw new RuntimeException(ex);
+                throw new ManagerSaveException("Не удалось инициализировать файл хранения:");
+            } catch (ManagerSaveException ex) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -48,7 +49,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             URL resource = FileBackedTaskManager.class.getClassLoader().getResource("data.csv");
             return resource != null ? Paths.get(resource.toURI()) : Paths.get("task_data.csv");
-        } catch (Exception e) {
+        } catch (ManagerSaveException e) {
             return Paths.get("task_data.csv");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -79,9 +80,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
             try {
-                throw new Exception.ManagerException("Ошибка сохранения данных");
-            } catch (Exception.ManagerException ex) {
-                throw new RuntimeException(ex);
+                throw new ManagerSaveException("Ошибка при сохранении файла");
+            } catch (ManagerSaveException ex) {
+                throw new RuntimeException();
             }
         }
     }
@@ -143,9 +144,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             try {
-                throw new Exception.ManagerException("Ошибка загрузки данных");
-            } catch (Exception.ManagerException ex) {
-                throw new RuntimeException(ex);
+                throw new ManagerSaveException("Ошибка загрузки данных");
+            } catch (ManagerSaveException exception) {
+                throw new RuntimeException();
             }
         }
     }

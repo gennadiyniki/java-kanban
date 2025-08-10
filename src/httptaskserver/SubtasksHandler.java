@@ -1,7 +1,7 @@
 package httptaskserver;
 
 import com.sun.net.httpserver.HttpExchange;
-import manager.Exception;
+import exception.NotFoundException;
 import manager.TaskManager;
 import tasks.Subtask;
 
@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 public class SubtasksHandler extends BaseHttpHandler {
     public SubtasksHandler(TaskManager taskManager) {
         super(taskManager);
-        //this.taskManager = taskManager;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class SubtasksHandler extends BaseHttpHandler {
                     }
                 }
                 sendSuccess(exchange, response);
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Такой Сабтаски нет");
             }
         }
@@ -61,7 +60,7 @@ public class SubtasksHandler extends BaseHttpHandler {
                         sendNotFound(exchange, "Сабтаска " + taskId + " не найдена");
                     }
                 }
-            } catch (Exception.NotFoundException e) {
+            } catch (NotFoundException e) {
                 sendNotFound(exchange, "Такой Сабтаски нет");
             }
         }
@@ -74,19 +73,21 @@ public class SubtasksHandler extends BaseHttpHandler {
             try {
                 if (urlParts.length == 2) {
                     taskManager.clearSubtasks();
-                    sendSuccess(exchange, "Все Сабтаски удалены");
+                    sendSuccess(exchange, "Все подзадачи удалены");
                 }
                 if (urlParts.length == 3) {
                     int taskId = Integer.parseInt(urlParts[2]);
                     if (taskId > 0 && taskManager.getSubtaskById(taskId) != null) {
                         taskManager.deleteSubtaskById(taskId);
-                        sendSuccess(exchange, "Сабтаска " + taskId + " удалена");
+                        String result = String.format("Подзадача %s удалена", taskId);
+                        sendSuccess(exchange, result);
                     } else {
-                        sendNotFound(exchange, "Сабтаска " + taskId + " не найдена");
+                        String result = String.format("Подзадача %s не найдена", taskId);
+                        sendNotFound(exchange, result);
                     }
                 }
-            } catch (Exception.NotFoundException e) {
-                sendNotFound(exchange, "Такой Сабтаски нет");
+            } catch (NotFoundException e) {
+                sendNotFound(exchange, "Нет такой подзадачи");
             }
         }
     }
