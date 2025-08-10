@@ -75,7 +75,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             try {
                 if (tempFile != null) Files.deleteIfExists(tempFile);
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
 
             try {
                 throw new Exception.ManagerException("Ошибка сохранения данных");

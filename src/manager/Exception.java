@@ -12,6 +12,7 @@ public class Exception extends RuntimeException {
             super(message);
         }
     }
+
     public static class ManagerException extends IOException {
         public ManagerException(String message) {
             super(message);
