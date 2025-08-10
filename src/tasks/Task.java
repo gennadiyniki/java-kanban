@@ -24,7 +24,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(String name, String description) {
+    public Task(String name, String description, LocalDateTime parse, Duration duration) {
         this.name = name;
         this.description = description;
     }

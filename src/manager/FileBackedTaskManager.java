@@ -17,8 +17,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             // Получаем путь к файлу из ресурсов
             Path path = Paths.get(getClass().getClassLoader().getResource("data.csv").toURI());
             this.savedTasksFile = path.toFile();
-        } catch (Exception e) {
-            throw new ManagerSaveException("Файл data.csv не найден в ресурсах");
+        } catch (java.lang.Exception e) {
+            throw new Exception("Файл data.csv не найден в ресурсах");
         }
     }
 
@@ -43,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла");
+            throw new Exception("Ошибка при сохранении файла");
         }
     }
 
@@ -99,7 +99,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             return manager;
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при загрузке из файла");
+            throw new Exception("Ошибка при загрузке из файла");
         }
     }
 
