@@ -1,4 +1,4 @@
-package httpTaskServer;
+package httptaskserver;
 
 import com.sun.net.httpserver.HttpExchange;
 import manager.Exception;

@@ -1,4 +1,4 @@
-package httpTaskServer;
+package httptaskserver;
 
 import adapters.DurationAdapter;
 import adapters.LocalDateTimeAdapter;
