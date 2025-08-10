@@ -2,6 +2,7 @@ package httptaskserver;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import manager.FileBackedTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class HttpTaskTest {
-
+    private Path tempFile;
     protected TaskManager manager = Managers.getDefaultManager();
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
@@ -38,6 +41,9 @@ public class HttpTaskTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
+        // Создаем временный файл для каждого теста
+        tempFile = Files.createTempFile("tasks", ".csv");
+        manager = new FileBackedTaskManager(tempFile);
 
         manager = Managers.getDefaultManager();
         httpTaskServer = new HttpTaskServer(manager);
@@ -74,8 +80,10 @@ public class HttpTaskTest {
     }
 
     @AfterEach
-    void afterEach() {
-
+    void afterEach() throws IOException {
+        httpTaskServer.stop();
+        // Удаляем временный файл
+        Files.deleteIfExists(tempFile);
         httpTaskServer.stop();
     }
 
