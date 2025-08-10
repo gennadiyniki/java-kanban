@@ -11,7 +11,12 @@ public class Managers {
     }
 
     public static TaskManager getInMemoryManager() {
-        return new InMemoryTaskManager();
+        return new InMemoryTaskManager() {
+            @Override
+            public void save() {
+
+            }
+        };
     }
 
     public static HistoryManager getDefaultHistory() {

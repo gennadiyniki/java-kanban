@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager {
+public abstract class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Task> tasks = new HashMap<>();
     protected Map<Integer, Epic> epics = new HashMap<>();
     protected Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -95,6 +95,9 @@ public class InMemoryTaskManager implements TaskManager {
             changeEpicTiming(epic);
         }
     }
+
+    // 3. Безопасное сохранение с атомарной записью
+    public abstract void save();
 
     @Override
     public Task updateTask(Task task) {
