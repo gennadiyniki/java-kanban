@@ -1,106 +1,168 @@
 package manager;
 
+import exception.ManagerSaveException;
 import tasks.*;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private final Path filePath;
 
-    private final File savedTasksFile;
+    // 1. Конструкторы с поддержкой старого и нового API
+    public FileBackedTaskManager(File file) {
+        this(file.toPath());
+    }
+
+    public FileBackedTaskManager(Path path) {
+        this.filePath = path.normalize().toAbsolutePath();
+        ensureFileExists();
+    }
 
     public FileBackedTaskManager() {
+        this(resolveDefaultPath());
+    }
+
+    // 2. Улучшенная инициализация файла
+    private void ensureFileExists() {
         try {
-            // Получаем путь к файлу из ресурсов
-            Path path = Paths.get(getClass().getClassLoader().getResource("data.csv").toURI());
-            this.savedTasksFile = path.toFile();
-        } catch (Exception e) {
-            throw new ManagerSaveException("Файл data.csv не найден в ресурсах");
+            if (!Files.exists(filePath)) {
+                Files.createDirectories(filePath.getParent());
+                Files.createFile(filePath);
+            }
+        } catch (IOException e) {
+            try {
+                throw new ManagerSaveException("Не удалось инициализировать файл хранения:");
+            } catch (ManagerSaveException ex) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    public FileBackedTaskManager(File savedTasksFile) {
-        this.savedTasksFile = savedTasksFile;
+    private static Path resolveDefaultPath() {
+        try {
+            URL resource = FileBackedTaskManager.class.getClassLoader().getResource("data.csv");
+            return resource != null ? Paths.get(resource.toURI()) : Paths.get("task_data.csv");
+        } catch (ManagerSaveException e) {
+            return Paths.get("task_data.csv");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    // 3. Безопасное сохранение с атомарной записью
+    @Override
     public void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
-            writer.write("id,type,name,status,description,epic,duration,startTime");
-            writer.newLine();
-            for (Task task : tasks.values()) {
-                writer.write(CSVFormatter.toString(task));
-                writer.newLine();
+        Path tempFile = null;
+        try {
+            tempFile = Files.createTempFile(filePath.getParent(), "temp", ".tmp");
+
+            try (BufferedWriter writer = Files.newBufferedWriter(tempFile)) {
+                writer.write("id,type,name,status,description,epic,duration,startTime\n");
+
+                // Сохраняем все типы задач
+                saveTasks(writer, tasks.values());
+                saveTasks(writer, epics.values());
+                saveTasks(writer, subtasks.values());
             }
-            for (Epic epic : epics.values()) {
-                writer.write(CSVFormatter.toString(epic));
-                writer.newLine();
-            }
-            for (Subtask subtask : subtasks.values()) {
-                writer.write(CSVFormatter.toString(subtask));
-                writer.newLine();
-            }
+
+            Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла");
+            try {
+                if (tempFile != null) Files.deleteIfExists(tempFile);
+            } catch (IOException ignored) {
+            }
+
+            try {
+                throw new ManagerSaveException("Ошибка при сохранении файла");
+            } catch (ManagerSaveException ex) {
+                throw new RuntimeException();
+            }
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
-        try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
-            bufferedReader.readLine();
-            Map<Integer, Task> tasks = new HashMap<>();
-            Map<Integer, Epic> epics = new HashMap<>();
-            Map<Integer, Subtask> subtasks = new HashMap<>();
-            Set<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
-            int maxId = 0;
-            String line;
-            while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
-                Task task1 = CSVFormatter.fromString(line);
-                if (task1 != null) {
-                    if (task1.getType() == TaskType.SUBTASK) {
-                        Subtask subtask = (Subtask) task1;
-                        if (subtask.getId() > maxId) {
-                            maxId = subtask.getId();
-                        }
-                        subtasks.put(subtask.getId(), subtask);
-                    } else if (task1.getType() == TaskType.EPIC) {
-                        Epic epic = (Epic) task1;
-                        if (epic.getId() > maxId) {
-                            maxId = epic.getId();
-                        }
-                        epics.put(epic.getId(), epic);
-                    } else if (task1.getType() == TaskType.TASK) {
-                        Task task = task1;
-                        if (task.getId() > maxId) {
-                            maxId = task.getId();
-                        }
-                        tasks.put(task.getId(), task);
-                        if (task.getStartTime() != null) {
-                            prioritizedTasks.add(task);
-                        }
-                    }
-                }
-            }
-            for (Subtask subtask : subtasks.values()) {
-                Epic parentEpic = epics.get(subtask.getEpicId());
-                if (parentEpic != null) {
-                    parentEpic.addSubtask(subtask.getId());
-                }
-            }
-            FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
-            manager.tasks = tasks;
-            manager.epics = epics;
-            manager.subtasks = subtasks;
-            manager.generatorId = maxId;
-            for (Epic epic : epics.values()) {
-                manager.updateEpicStatus(epic); // Теперь метод доступен
-            }
-            return manager;
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при загрузке из файла");
+    private void saveTasks(BufferedWriter writer, Collection<? extends Task> tasks) throws IOException {
+        for (Task task : tasks) {
+            writer.write(CSVFormatter.toString(task) + "\n");
         }
+    }
+
+    // 4. Загрузка данных (сохраняем старый интерфейс)
+    public static FileBackedTaskManager loadFromFile(File file) {
+        return loadFromPath(file.toPath());
+    }
+
+    public static FileBackedTaskManager loadFromPath(Path path) {
+        try {
+            if (!Files.exists(path) || Files.size(path) == 0) {
+                return new FileBackedTaskManager(path);
+            }
+
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                Map<Integer, Task> tasks = new HashMap<>();
+                Map<Integer, Epic> epics = new HashMap<>();
+                Map<Integer, Subtask> subtasks = new HashMap<>();
+                int maxId = 0;
+
+                reader.readLine(); // Пропускаем заголовок
+
+                String line;
+                while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                    Task task = CSVFormatter.fromString(line);
+                    if (task == null) continue;
+
+                    if (task instanceof Subtask) {
+                        subtasks.put(task.getId(), (Subtask) task);
+                    } else if (task instanceof Epic) {
+                        epics.put(task.getId(), (Epic) task);
+                    } else {
+                        tasks.put(task.getId(), task);
+                    }
+
+                    maxId = Math.max(maxId, task.getId());
+                }
+
+                // Восстанавливаем связи
+                restoreSubtasksEpicLinks(subtasks, epics);
+
+                FileBackedTaskManager manager = new FileBackedTaskManager(path);
+                manager.tasks = tasks;
+                manager.epics = epics;
+                manager.subtasks = subtasks;
+                manager.generatorId = maxId;
+
+                // Обновляем статусы эпиков
+                epics.values().forEach(manager::updateEpicStatus);
+
+                return manager;
+            }
+        } catch (IOException e) {
+            try {
+                throw new ManagerSaveException("Ошибка загрузки данных");
+            } catch (ManagerSaveException exception) {
+                throw new RuntimeException();
+            }
+        }
+    }
+
+    private static void restoreSubtasksEpicLinks(Map<Integer, Subtask> subtasks, Map<Integer, Epic> epics) {
+        for (Subtask subtask : subtasks.values()) {
+            Epic epic = epics.get(subtask.getEpicId());
+            if (epic != null) {
+                epic.addSubtask(subtask.getId());
+            }
+        }
+    }
+
+    // 5. Геттер для тестов (при необходимости)
+    public Path getFilePath() {
+        return filePath;
     }
 
     @Override

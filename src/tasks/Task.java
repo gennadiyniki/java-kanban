@@ -24,7 +24,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public Task(String name, String description) {
+    public Task(String name, String description, LocalDateTime parse, Duration duration) {
         this.name = name;
         this.description = description;
     }
@@ -101,7 +101,7 @@ public class Task {
         if (startTime == null || duration == null) {
             return null;
         }
-        return startTime.plus(duration);
+        return startTime;
     }
 
     public void setStartTime(LocalDateTime startTime) {

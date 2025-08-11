@@ -1,12 +1,13 @@
 package manager;
 
+import exception.ConflictException;
 import tasks.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager {
+public abstract class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Task> tasks = new HashMap<>();
     protected Map<Integer, Epic> epics = new HashMap<>();
     protected Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -41,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task addTask(Task task) {
         if (task.getStartTime() != null && hasTimeIntersection(task)) {
-            throw new ManagerSaveException("Обнаружено пересечение по времени");
+            throw new ConflictException("Обнаружено пересечение по времени");
         }
 
         task.setId(getGeneratorId());
@@ -69,7 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         if (subtask.getStartTime() != null && subtask.getDuration() != null) {
             if (hasTimeIntersection(subtask)) {
-                throw new ManagerSaveException("Обнаружено пересечение времени!");
+                throw new ConflictException("Обнаружено пересечение времени!");
             }
             prioritizedTasks.add(subtask);
         }
@@ -96,6 +97,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    // 3. Безопасное сохранение с атомарной записью
+    public abstract void save();
+
     @Override
     public Task updateTask(Task task) {
         Integer taskID = task.getId();
@@ -103,7 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
         if (task.getStartTime() != null && hasTimeIntersection(task)) {
-            throw new ManagerSaveException("Обнаружено пересечение по времени");
+            throw new ConflictException("Обнаружено пересечение по времени");
         }
         prioritizedTasks.removeIf(t -> t.getId() == task.getId());
         if (task.getStartTime() != null) {

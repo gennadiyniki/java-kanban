@@ -30,7 +30,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         // Создаем задачи с временем выполнения
         LocalDateTime now = LocalDateTime.now();
 
-        task = new Task(1, "Название", "Описание", TaskStatus.NEW,
+        task = new Task(1, "Таск", "Описание", TaskStatus.NEW,
                 now, Duration.ofMinutes(30));
         taskManager.addTask(task);
 
